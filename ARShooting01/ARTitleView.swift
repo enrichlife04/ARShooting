@@ -1,0 +1,77 @@
+//
+//  ARTitleView.swift
+//  ARShooting01
+//
+//  Created by 村中光一 on 2022/12/30.
+
+
+import SwiftUI
+import RealityKit
+
+struct ARTitleView : View {
+    
+    //@EnvironmentObjectを付与したプロパティは複数のViewでインスタンスを共有できる。
+    // つまり、AppDelegateで生成したgameInfo(ゲーム情報)を複数の画面で使用できる。
+    @EnvironmentObject var gameInfo: GameInfo
+    
+    var body: some View {
+        
+        // ARViewを生成
+        let arView = ARViewContainer().edgesIgnoringSafeArea(.all)
+        
+        let view = ZStack {
+            
+            // ARViewを表示
+            arView
+            
+            // タイトルボタンを表示
+            VStack(spacing: 200) {
+                
+                if gameInfo.gameState == .menu {
+                    // タイトル
+                    Text("ARShooting")
+                        .font(Font.custom("HelveticaNeue-Bold", size: 60.0))
+                }
+                
+                // ボタン
+                Button(action: {
+                    self.gameInfo.gameState = .placingContent
+                }) {
+                    if gameInfo.gameState == .menu {
+                        Text("Game Start")
+                    }
+                }
+            }
+        }
+        
+        return view
+    }
+}
+
+struct ARViewContainer: UIViewRepresentable {
+    
+    func makeUIView(context: Context) -> ARView {
+        
+        let arView = ARView(frame: .zero)
+        
+        // Load the "Box" scene from the "Experience" Reality File
+        let boxAnchor = try! Experience.loadBox()
+        
+        // Add the box anchor to the scene
+        arView.scene.anchors.append(boxAnchor)
+        
+        return arView
+        
+    }
+    
+    func updateUIView(_ uiView: ARView, context: Context) {}
+    
+}
+
+#if DEBUG
+struct ARTitleView_Previews : PreviewProvider {
+    static var previews: some View {
+        ARTitleView()
+    }
+}
+#endif
