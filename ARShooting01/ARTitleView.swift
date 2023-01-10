@@ -17,7 +17,7 @@ struct ARTitleView : View {
     var body: some View {
         
         // ARViewを生成
-        let arView = ARViewContainer().edgesIgnoringSafeArea(.all)
+        let arView = ARViewContainer(gameInfo: gameInfo).edgesIgnoringSafeArea(.all)
         
         let view = ZStack {
             
@@ -50,23 +50,18 @@ struct ARTitleView : View {
 
 struct ARViewContainer: UIViewRepresentable {
     
-    func makeUIView(context: Context) -> ARView {
+    var gameInfo: GameInfo
+    
+    func makeUIView(context: Context) -> UIView {
         
-        let arView = ARView(frame: .zero)
-        
-        // Load the "Box" scene from the "Experience" Reality File
-        let boxAnchor = try! Experience.loadBox()
-        
-        // Add the box anchor to the scene
-        arView.scene.anchors.append(boxAnchor)
-        
-        return arView
-        
+        return ARShootingView(frame: .zero, gameInfo: gameInfo)
     }
     
-    func updateUIView(_ uiView: ARView, context: Context) {}
+    // ARView を UIViewに変更
+    func updateUIView(_ uiView: UIView, context: Context) {}
     
 }
+
 
 #if DEBUG
 struct ARTitleView_Previews : PreviewProvider {
@@ -74,4 +69,5 @@ struct ARTitleView_Previews : PreviewProvider {
         ARTitleView()
     }
 }
+
 #endif
